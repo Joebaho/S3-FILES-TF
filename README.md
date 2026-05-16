@@ -18,8 +18,8 @@ Adds an entry to /etc/fstab to persist the mount across reboots.
 All resources are tagged, well‑structured, and easy to destroy when no longer needed.
 
 ## 🗂️ Project Structure
-text
-.
+
+
 ├── provider.tf          # Terraform and AWS provider configuration
 ├── variables.tf         # Input variables (bucket name, key name, region, etc.)
 ├── terraform.tfvars     # (create yourself) – actual variable values
@@ -53,6 +53,7 @@ text
                              +-------------------+
 
 ## 🧰 Prerequisites
+
 Terraform (≥ 1.0)
 
 AWS CLI configured with credentials having permissions to create EC2, S3, IAM, and security groups.
@@ -65,11 +66,11 @@ Basic knowledge of AWS and Terraform.
 
 ### 1. Clone the repository
 
-bash```
+```bash
 git clone https://github.com/joebaho2/S3-FILES-TF.git
 ```
 
-bash``
+```bash
 cd S3-FILES-TF
 ```
 
@@ -78,7 +79,7 @@ cd S3-FILES-TF
 
 Create a file named terraform.tfvars with your specific values:
 
-bash ```
+```bash 
 aws_region   = "us-east-1"
 bucket_name  = "my-unique-bucket-name-12345"   # must be globally unique
 key_name     = "your-existing-key-pair-name"
@@ -89,31 +90,34 @@ mount_point   = "/mnt/s3-bucket"              # customise if needed
 
 ### 3. Initialize Terraform
 
-bash```
+```bash
 terraform init
 ```
 
 ### 4. Review the plan
 
-bash```
+```bash
 terraform plan
 ```
 
 ### 5. Apply
-bash
+
+```bash
 terraform apply -auto-approve
+```
+
 After completion, Terraform outputs the public IP, bucket name, and mount point.
 
 
 ### 6. Connect to the instance
 
-bash```
+```bash
 ssh -i your-key.pem ubuntu@$(terraform output -raw instance_public_ip)
 ```
 
 ### 7. Verify the mount
 
-bash```
+```bash
 df -h | grep s3fs
 ls -la /mnt/s3-bucket
 echo "Hello from EC2" | sudo tee /mnt/s3-bucket/test.txt
@@ -124,13 +128,14 @@ You can now read and write files – they are directly stored in S3.
 ## 🧼 Clean Up
 To avoid ongoing charges, destroy all resources:
 
-bash```
+```bash
 terraform destroy -auto-approve
 ```
 
 Note: The S3 bucket is configured with force_destroy = true. This will delete all objects and versions inside the bucket before removing the bucket itself. Use with caution – data cannot be recovered.
 
-🛠️ Customisation
+## 🛠️ Customisation
+
 Variable	        Description	                   Default
 aws_region	        AWS region	                   us-west-2
 bucket_name	        Unique S3 bucket name	       (required)
@@ -145,13 +150,13 @@ You can also adjust the security group ingress rules in security-groups.tf (e.g.
 The mount point is empty or the bucket is not mounted
 Check the user‑data script logs on the instance:
 
-bash```
+```bash
 sudo cat /var/log/cloud-init-output.log
 ```
 
 Manually install s3fs and mount:
 
-bash```
+```bash
 sudo apt update && sudo apt install -y s3fs
 sudo s3fs <bucket-name> /mnt/s3-bucket -o allow_other,use_cache=/tmp,iam_role=auto
 ```
@@ -161,14 +166,14 @@ Verify the IAM role is attached to the instance (AWS Console → EC2 → Instanc
 Terraform destroy fails because bucket is not empty
 The s3.tf file includes force_destroy = true. If you removed it, manually empty the bucket first:
 
-bash```
+```bash
 aws s3 rm s3://<bucket-name> --recursive
 ```
 
 Permission denied when writing to mount point
 Ensure the ubuntu user has write permissions:
 
-bash```
+```bash
 sudo chmod 777 /mnt/s3-bucket   # not recommended for production
 ```
 
