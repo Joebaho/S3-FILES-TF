@@ -19,7 +19,7 @@ All resources are tagged, well‑structured, and easy to destroy when no longer 
 
 ## 🗂️ Project Structure
 
-
+```bash
 ├── provider.tf          # Terraform and AWS provider configuration
 ├── variables.tf         # Input variables (bucket name, key name, region, etc.)
 ├── terraform.tfvars     # (create yourself) – actual variable values
@@ -31,9 +31,11 @@ All resources are tagged, well‑structured, and easy to destroy when no longer 
 ├── userdata.sh          # Script to install s3fs and mount the bucket
 ├── outputs.tf           # Public IP, DNS, bucket name, mount point
 └── README.md            # This file
+```
 
 🧠 Architecture Diagram
 
+```bash
 +-------------------+      +-------------------+
 |     Terraform     |      |   AWS Cloud       |
 |   (your machine)  |      |                   |
@@ -51,6 +53,7 @@ All resources are tagged, well‑structured, and easy to destroy when no longer 
                              |         |         |
                              |  IAM Role (S3 access)
                              +-------------------+
+```
 
 ## 🧰 Prerequisites
 
@@ -94,11 +97,15 @@ mount_point   = "/mnt/s3-bucket"              # customise if needed
 terraform init
 ```
 
+![Terraform init](images/tfinit.png)  
+
 ### 4. Review the plan
 
 ```bash
 terraform plan
 ```
+
+![Terraform Plan](images/tfplan.png)  
 
 ### 5. Apply
 
@@ -106,14 +113,30 @@ terraform plan
 terraform apply -auto-approve
 ```
 
-After completion, Terraform outputs the public IP, bucket name, and mount point.
+![Terraform Apply](images/apply.png)  
+
+After completion, Terraform outputs the public IP, bucket name, and mount point. You can go to console to see all reesources that were created
+
+EC2 Instance
+
+![EC2](images/ec21.png)  
+
+S3 Bucket
+
+![S3](images/s3bucket.png)  
 
 
 ### 6. Connect to the instance
 
+![EC2 Connect](images/ec22.png)  
+
 ```bash
 ssh -i your-key.pem ubuntu@$(terraform output -raw instance_public_ip)
 ```
+
+![EC2 Connect1](images/connect1.png)  
+
+![Ec2 Connect2](images/connect2.png)  
 
 ### 7. Verify the mount
 
@@ -123,6 +146,22 @@ ls -la /mnt/s3-bucket
 echo "Hello from EC2" | sudo tee /mnt/s3-bucket/test.txt
 ```
 
+The command "echo" will created a file via cli that will be sent to the mountedd s3 bucket. 
+
+![Fle Created CLI](images/files1.png)  
+
+We can see that the file appear in the s3 bucket.
+
+![File in S3](images/files2.png)  
+
+Now we upload a files via the console
+
+![Uploaded file](images/file3.png)  
+
+Check via cli that the file is there
+
+![Cli checking file](images/file4.png)  
+
 You can now read and write files – they are directly stored in S3.
 
 ## 🧼 Clean Up
@@ -131,6 +170,8 @@ To avoid ongoing charges, destroy all resources:
 ```bash
 terraform destroy -auto-approve
 ```
+
+![Terraform destroy](images/destroy.png)  
 
 Note: The S3 bucket is configured with force_destroy = true. This will delete all objects and versions inside the bucket before removing the bucket itself. Use with caution – data cannot be recovered.
 
