@@ -136,12 +136,14 @@ Note: The S3 bucket is configured with force_destroy = true. This will delete al
 
 ## 🛠️ Customisation
 
-Variable	        Description	                   Default
-aws_region	        AWS region	                   us-west-2
-bucket_name	        Unique S3 bucket name	       (required)
-key_name	        EC2 key pair name	           (required)
-instance_type	    EC2 instance type	           t2.micro
-mount_point	        Local directory for the mount	/mnt/s3-bucket
+| Variable     | Description      | Default         |
+|------------- |----------------- |-----------------|
+| AWS_region   | AWS region.      | us-west-2       |
+| bucket_name  | Unique S3 bucket | Required        |
+| key_name.    | EC2 key pair name| Required        |
+| instance_type| Ec2 instance type| t3.micro.       |
+| mount_point  | Local directory  | /mnt/s3-bucket  |
+|              | for the mount    |                 |
 
 You can also adjust the security group ingress rules in security-groups.tf (e.g., restrict SSH to your IP).
 
