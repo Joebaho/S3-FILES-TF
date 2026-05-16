@@ -1,5 +1,7 @@
 # 🚀 Terraform: Mount S3 Bucket on EC2 (Ubuntu) using s3fs‑fuse
 
+![Arcitecture](images/Arcitecture.png)
+
 This project automates the creation of an S3 bucket, an EC2 instance (Ubuntu 22.04), an IAM role with S3 permissions, and the automatic mounting of the bucket as a local file system using s3fs‑fuse. It uses Terraform to provision the infrastructure and a user‑data script to configure the mount on the instance.
 
 ## 📖 Overview
